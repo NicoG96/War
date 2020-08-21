@@ -10,3 +10,6 @@ class Deck():
 
 	def get_count(self):
 		return len(self._cards)
+
+	def get_cards(self):
+		return self._cards
