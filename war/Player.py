@@ -7,7 +7,7 @@ class Player():
 		self.deck = deck
 
 	def is_not_winner(self):
-		return True if self.deck != 52 else False
+		return True if self.deck.get_count() != 52 else False
 
 	def set_name(self, name):
 		self.name = name
