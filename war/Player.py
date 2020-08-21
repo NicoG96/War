@@ -1,11 +1,16 @@
-from Deck import Deck
+from .Deck import Deck
 
 
 class Player():
-	def __init__(self, name, deck=Deck(), is_turn=False):
+	def __init__(self, name="", deck=Deck()):
 		self.name = name
-		self.cards = deck
-		self.is_turn = is_turn
+		self.deck = deck
 
-	def check_if_winner(self):
-		return True if self.cards == 52 else False
+	def is_not_winner(self):
+		return True if self.deck != 52 else False
+
+	def set_name(self, name):
+		self.name = name
+
+	def set_deck(self, deck):
+		self.deck = deck
