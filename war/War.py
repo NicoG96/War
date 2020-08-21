@@ -1,5 +1,6 @@
-from CardFactory import CardFactory
-from Deck import Deck
+from .CardFactory import CardFactory
+from .Deck import Deck
+import random
 
 
 class War():
@@ -17,7 +18,13 @@ class War():
 			raise Exception("Only one game permitted")
 
 	def init_game(self):
-		pass
+		# create 52-card deck, 13 for each suit
+		for x in range(1, 14):
+			self.deck.add_card(self.factory.create_spade(x)) 
+			self.deck.add_card(self.factory.create_club(x)) 
+			self.deck.add_card(self.factory.create_heart(x)) 
+			self.deck.add_card(self.factory.create_diamond(x))
+		random.shuffle(self.deck.get_cards())
 
 	def start_game(self):
 		self.init_game()
