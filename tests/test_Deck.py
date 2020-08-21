@@ -15,14 +15,14 @@ class test_Deck(unittest.TestCase):
 		iterations = random.randint(2, 10)
 
 		for _ in range(iterations):
-			self.deck.add_card(self.fac.create_spade(1))
+			self.deck.add_card(self.fac.create_spade(14))
 		self.assertTrue(self.deck.get_count() == iterations)
 	
 	def test_remove_card(self):
 		current_count = self.deck.get_count()
 		ret = self.deck.remove_card()
 		self.assertTrue(self.deck.get_count() == current_count-1)
-		self.assertEqual(ret.get_value(), 1)
+		self.assertEqual(ret.get_value(), 14)
 		self.assertEqual(ret.get_suit(), 'spade')
 
 	def test_queue_pop(self):
