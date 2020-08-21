@@ -29,7 +29,3 @@ class test_CardFactory(unittest.TestCase):
 			value = random.randint(1, 13)
 			card = self.fac.create_spade(value)
 			self.assertEqual(card.get_value(), value)
-		
-
-if __name__ == "__main__":
-	unittest.main()
