@@ -1,5 +1,6 @@
 import unittest
 from War.War import War
+from War.Player import Player
 import random
 
 
@@ -29,3 +30,12 @@ class test_War(unittest.TestCase):
 
 		for card in cards[26:]:
 			self.assertTrue(card in deck2.get_cards())
+
+	def test_switch_player(self):
+		p1 = Player()
+		p2 = Player()
+
+		ret1, ret2 = self.game.switch_player(p1, p2)
+
+		self.assertEqual(ret1, p2)
+		self.assertEqual(ret2, p1)

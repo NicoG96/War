@@ -33,3 +33,16 @@ class test_Deck(unittest.TestCase):
 		self.deck.add_card(new_card)
 		ret = self.deck.remove_card()
 		self.assertNotEqual(ret, new_card)
+
+	def test_add_cards(self):
+		"""
+		test adding multiple cards in one transaction
+		"""
+		current_count = self.deck.get_count()
+		cards = []
+
+		for _ in range(10):
+			cards.append(self.fac.create_heart(5))
+		
+		self.deck.add_cards(cards)
+		self.assertEqual(self.deck.get_count(), current_count+10)
