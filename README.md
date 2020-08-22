@@ -19,7 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 It is recommended to run this application from within a virtual environment. Python makes this pretty simple with:
 
-`python3 venv <environment_name_here>`
+`python3 -m venv <environment_name_here>`
 
 Activate this virtual environment then run the following to install the project's dependencies:
 
@@ -38,4 +38,4 @@ This will launch the application. The `-i` flag is an optional parameter to use 
 
 To run the tests included in the package, invoke:
 
-`python3 -m unittest discover` 
+`python3 -m unittest discover`
