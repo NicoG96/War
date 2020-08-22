@@ -68,17 +68,18 @@ class War():
 			p2_header = self.player_2.name + " (" + str(self.player_2.deck.get_count()-1) + ")"
 			table.field_names = [p1_header, p2_header]
 
-			# update leaderboard. if in war, keep same stats
+			# update leaderboard. if in war, keep same stats from last round
 			if self.pot.get_count() == 0:
 				table.clear_rows()
+
 			# if player is going into the round with no cards, other player wins
-			if self.player_1.deck.get_count() == 0 or self.player_2.deck.get_count() == 0:
-				if self.player_1.deck.get_count() != 0:
-					self.player_1.deck.add_cards(self.pot.get_cards())
-					self.pot.clear_deck()
-				elif self.player_2.deck.get_count() != 0:
-					self.player_2.deck.add_cards(self.pot.get_cards())
-					self.pot.clear_deck()
+			if self.player_1.deck.get_count() == 0:
+				self.player_2.deck.add_cards(self.pot.get_cards())
+				self.pot.clear_deck()
+				break
+			elif self.player_2.deck.get_count() == 0:
+				self.player_1.deck.add_cards(self.pot.get_cards())
+				self.pot.clear_deck()
 				break
 
 			# game as usual, remove card from player's deck & add to pot
@@ -125,7 +126,6 @@ class War():
 				if self.player_1.deck.get_count() != 0:
 					war_card1 = self.player_1.deck.remove_card()
 					self.pot.add_card(war_card1)
-
 				else:
 					self.player_2.deck.add_cards(self.pot.get_cards())
 					self.pot.clear_deck()
