@@ -25,11 +25,6 @@ Activate this virtual environment then run the following to install the project'
 
 `pip3 install -r requirements.txt`
 
-### Tests
-
-To run the tests included in the package, invoke:
-
-`python3 -m unittest discover` 
 
 ## Usage <a name = "usage"></a>
 
@@ -38,3 +33,9 @@ To run this application, invoke:
 `python3 ./run.py [-i, --interactive]`
 
 This will launch the application. The `-i` flag is an optional parameter to use if the user would like to interactively draw cards. Otherwise, the application will seamlessly auto-draw cards until a winner is declared.
+
+### Tests
+
+To run the tests included in the package, invoke:
+
+`python3 -m unittest discover` 
