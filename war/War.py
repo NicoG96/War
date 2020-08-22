@@ -58,17 +58,14 @@ class War():
 		table = PrettyTable()
 		
 		# Get username
-		print("Player 1, please enter your name: ", end="")
+		print("Please enter your name: ", end="")
 		self.player_1.name = input()
-
-		print("Player 2, please enter your name: (Press Enter if single-player mode) ", end="")
-		player2_name = input()
-		self.player_2.name = player2_name if player2_name != "" else "Computer"
+		self.player_2.name = "Computer"
 
 		# start game
 		while self.player_1.is_not_winner() and self.player_2.is_not_winner():
-			p1_header = self.player_1.name + " (" + str(self.player_1.deck.get_count()) + ")"
-			p2_header = self.player_2.name + " (" + str(self.player_2.deck.get_count()) + ")"
+			p1_header = self.player_1.name + " (" + str(self.player_1.deck.get_count()-1) + ")"
+			p2_header = self.player_2.name + " (" + str(self.player_2.deck.get_count()-1) + ")"
 			table.field_names = [p1_header, p2_header]
 
 			# update leaderboard. if in war, keep same stats
@@ -85,10 +82,17 @@ class War():
 				break
 
 			# game as usual, remove card from player's deck & add to pot
+			if is_interactive:
+				print("Press 'c' to draw a card")
+				while input().lower() != 'c':
+					continue
 			card1 = self.player_1.deck.remove_card()
 			self.pot.add_card(card1)
 
 			# remove other player's
+			if is_interactive:
+				print("{} making their move...".format(self.player_2.name))
+				time.sleep(1)
 			card2 = self.player_2.deck.remove_card()
 			self.pot.add_card(card2)
 
@@ -99,8 +103,8 @@ class War():
 			print(table)
 
 			# slow down!
-			if not is_interactive:
-				time.sleep(1)
+			time.sleep(1)
+
 			# see who won the round
 			if card1.get_value() > card2.get_value():
 				self.player_1.deck.add_cards(self.pot.get_cards())
