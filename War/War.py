@@ -52,7 +52,7 @@ class War():
 		print(colored(Figlet(font="slant").renderText("W A R"), "cyan"), end="")
 		print(colored("===============================", "cyan"))
 
-	def start_game(self, is_interactive):
+	def start_game(self, is_interactive, is_debug):
 		self.init_game()
 		self.cli()
 		table = PrettyTable()
@@ -93,7 +93,8 @@ class War():
 			# remove other player's
 			if is_interactive:
 				print("{} making their move...".format(self.player_2.name))
-				time.sleep(1)
+				if not is_debug:
+					time.sleep(1)
 			card2 = self.player_2.deck.remove_card()
 			self.pot.add_card(card2)
 
@@ -104,9 +105,11 @@ class War():
 			print(table)
 
 			# slow down!
-			time.sleep(1)
+			if not is_debug:
+				time.sleep(1)
 
 			# see who won the round
+			random.shuffle(self.pot.get_cards())
 			if card1.get_value() > card2.get_value():
 				self.player_1.deck.add_cards(self.pot.get_cards())
 				self.pot.clear_deck()
@@ -144,7 +147,7 @@ class War():
 					war_card1.get_short_name() + " " + war_card1.get_symbol(), 
 					war_card2.get_short_name() + " " + war_card2.get_symbol()
 				])
-			if not is_interactive:
+			if not is_interactive and not is_debug:
 				time.sleep(2)
 
 		if self.player_1.is_not_winner():
