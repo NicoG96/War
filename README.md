@@ -30,9 +30,13 @@ Activate this virtual environment then run the following to install the project'
 
 To run this application, invoke:
 
-`python3 ./run.py [-i, --interactive]`
+`python3 ./run.py [-i, --interactive] [-d, --debug]`
 
-This will launch the application. The `-i` flag is an optional parameter to use if the user would like to interactively draw cards. Otherwise, the application will seamlessly auto-draw cards until a winner is declared.
+This command will launch the application.
+
+The `-i` flag is an optional parameter to use if the user would like to interactively draw cards. Otherwise, the application will seamlessly auto-draw cards until a winner is declared.
+
+The `-d` flag is for developer purposes. It will significantly shorten the duration of the game so that the entire game output can be captured within seconds.
 
 ### Tests
 
