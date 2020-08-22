@@ -1,7 +1,11 @@
 from .CardFactory import CardFactory
-from .Deck import Deck
 from .Player import Player
+from .Deck import Deck
+import time
 import random
+from pyfiglet import Figlet
+from termcolor import colored
+from prettytable import PrettyTable
 
 
 class War():
@@ -23,7 +27,7 @@ class War():
 	def create_cards(self):
 		cards = []
 		# create 52-card deck, 13 for each suit
-		for x in range(1, 14):
+		for x in range(2, 15):
 			cards.append(self.factory.create_spade(x)) 
 			cards.append(self.factory.create_club(x)) 
 			cards.append(self.factory.create_heart(x)) 
@@ -37,46 +41,39 @@ class War():
 		self.player_1.set_deck(deck1)
 		self.player_2.set_deck(deck2)
 
-	def switch_player(self, curr, prev):
-		temp = prev
-		prev = curr
-		curr = temp
-		return curr, prev
-
 	def init_game(self):
 		cards = self.create_cards()
 		random.shuffle(cards)
 		deck1, deck2 = self.split_cards(cards)
 		self.assign_decks(deck1, deck2)
-	
-	def end_game(self):
-		pass
 
-	def start_game(self):
+	def cli(self):
+		print(colored("===============================", "cyan"))
+		print(colored(Figlet(font="slant").renderText("W A R"), "cyan"), end="")
+		print(colored("===============================", "cyan"))
+
+	def start_game(self, is_interactive):
 		self.init_game()
+		self.cli()
+		table = PrettyTable()
 		
 		# Get username
-		print("Player 1, please enter your name: ")
+		print("Player 1, please enter your name: ", end="")
 		self.player_1.name = input()
 
-		print("Player 2, please enter your name: (Press Enter if single-player mode) ")
+		print("Player 2, please enter your name: (Press Enter if single-player mode) ", end="")
 		player2_name = input()
 		self.player_2.name = player2_name if player2_name != "" else "Computer"
 
-		whose_turn = random.randint(0, 1)
-		current_player = None
-		previous_player = None
-
-		# randomly pick starting player
-		if whose_turn:
-			current_player = self.player_2
-			previous_player = self.player_1
-		else:
-			current_player = self.player_1
-			previous_player = self.player_2
-
 		# start game
 		while self.player_1.is_not_winner() and self.player_2.is_not_winner():
+			p1_header = self.player_1.name + " (" + str(self.player_1.deck.get_count()) + ")"
+			p2_header = self.player_2.name + " (" + str(self.player_2.deck.get_count()) + ")"
+			table.field_names = [p1_header, p2_header]
+
+			# update leaderboard. if in war, keep same stats
+			if self.pot.get_count() == 0:
+				table.clear_rows()
 			# if player is going into the round with no cards, other player wins
 			if self.player_1.deck.get_count() == 0 or self.player_2.deck.get_count() == 0:
 				if self.player_1.deck.get_count() != 0:
@@ -87,46 +84,66 @@ class War():
 					self.pot.clear_deck()
 				break
 
-			# remove card from player's deck & add to pot
-			card1 = current_player.deck.remove_card()
+			# game as usual, remove card from player's deck & add to pot
+			card1 = self.player_1.deck.remove_card()
 			self.pot.add_card(card1)
 
-			# switch players
-			current_player, previous_player = self.switch_player(current_player, previous_player)
-
-			card2 = current_player.deck.remove_card()
+			# remove other player's
+			card2 = self.player_2.deck.remove_card()
 			self.pot.add_card(card2)
 
-			for card in self.pot.get_cards():
-				print(card.get_value())
+			# update gui
+			table.add_row([
+				card1.get_short_name() + " " + card1.get_symbol(), 
+				card2.get_short_name() + " " + card2.get_symbol()])
+			print(table)
 
+			# slow down!
+			if not is_interactive:
+				time.sleep(1)
+			# see who won the round
 			if card1.get_value() > card2.get_value():
-				previous_player.deck.add_cards(self.pot.get_cards())
+				self.player_1.deck.add_cards(self.pot.get_cards())
 				self.pot.clear_deck()
+				print("\n{} wins the pot!\n".format(self.player_1.name))
 			elif card2.get_value() > card1.get_value():
-				current_player.deck.add_cards(self.pot.get_cards())
+				self.player_2.deck.add_cards(self.pot.get_cards())
 				self.pot.clear_deck()
+				print("\n{} wins the pot!\n".format(self.player_2.name))
 
 			# war, each player contributes 1 card
 			else:
-				if current_player.deck.get_count() != 0:
-					self.pot.add_card(current_player.deck.remove_card())
+				war_card1 = None
+				war_card2 = None 
+
 				# if the player doesn't have any more cards to play, other player wins
+				# if they do have enough, then chip in
+				if self.player_1.deck.get_count() != 0:
+					war_card1 = self.player_1.deck.remove_card()
+					self.pot.add_card(war_card1)
+
 				else:
-					previous_player.deck.add_cards(self.pot.get_cards())
+					self.player_2.deck.add_cards(self.pot.get_cards())
 					self.pot.clear_deck()
 					break
 
-				if previous_player.deck.get_count() != 0:
-					self.pot.add_card(previous_player.deck.remove_card())
+				if self.player_2.deck.get_count() != 0:
+					war_card2 = self.player_2.deck.remove_card()
+					self.pot.add_card(war_card2)
 				else:
-					current_player.deck.add_cards(self.pot.get_cards())
+					self.player_1.deck.add_cards(self.pot.get_cards())
 					self.pot.clear_deck()
 					break
 
-			current_player, previous_player = self.switch_player(current_player, previous_player)
+				# update gui with these war-round cards
+				table.add_row([
+					war_card1.get_short_name() + " " + war_card1.get_symbol(), 
+					war_card2.get_short_name() + " " + war_card2.get_symbol()
+				])
+			if not is_interactive:
+				time.sleep(2)
 
 		if self.player_1.is_not_winner():
-			print("{} IS THE WINNER!".format(self.player_2.name))
+			print("{} won!".format(self.player_2.name))
 		else:
-			print("{} IS THE WINNER!".format(self.player_1.name))
+			print("{} won!".format(self.player_1.name))
